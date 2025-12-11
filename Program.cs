@@ -1,6 +1,8 @@
 using System.Text;
 using backend_api.Data;
 using backend_api.Models;
+using backend_api.Repository;
+using backend_api.Services;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -12,6 +14,9 @@ builder.Services.AddDbContext<ApiContext>(options => options.UseNpgsql(builder.C
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
+builder.Services.AddScoped(typeof(MenuRepository));
+builder.Services.AddScoped(typeof(MenuService));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,7 +27,5 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 app.UseHttpsRedirection();
-var endPoints  = app.Services.GetServices<EndpointDataSource>().SelectMany(x=>x.Endpoints).ToList();
-Console.WriteLine(endPoints.Count);
-Console.WriteLine(endPoints);
+
 app.Run();
