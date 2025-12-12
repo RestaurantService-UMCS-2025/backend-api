@@ -23,10 +23,8 @@ public class MenuRepository
         return menu;
     }
 
-    public void Patch(int id,bool mode)
+    public void Save()
     {
-        var menu = context.menu.FirstOrDefault(menu => menu.Id == id);
-        menu.Available = mode;
         context.SaveChanges();
     }
 }

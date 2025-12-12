@@ -22,8 +22,10 @@ public class MenuService
         return context.GetById(id);
     }
 
-    public void Patch(int id,bool mode)
+    public void SetAvailable(int id,bool mode)
     {
-        context.Patch(id,mode);
+        var menu = context.GetById(id);
+        menu.Available = mode;
+        context.Save();
     }
 }

@@ -8,35 +8,24 @@ namespace backend_api;
 
 [ApiController]
 [Route("api/[controller]")]
-public class MenuController : ControllerBase
+public class MenuController(MenuService context) : ControllerBase
 {
-    private readonly MenuService context;
-
-    public MenuController(MenuService context)
-    {
-        this.context = context;
-    }
-    // api/Menu/all
     [HttpGet("all")]
     public List<Menu> GetAll()
     {
         return context.GetAll().Result;
     }
-    // api/Menu/1
+    
     [HttpGet("{id}")]
     public Task<Menu> GetById(int id)
     {
         return context.GetById(id);
     }
-    // api/Menu/patch
-    // {
-    //     "id":1,
-    //     "mode":false
-    // }
-    [HttpPatch("patch")]
-    public void Patch([FromBody] PatchAvailableBody patchAvailableBody)
+    
+    [HttpPatch("setAvailable")]
+    public void SetAvailable([FromBody] PatchAvailableBody patchAvailableBody)
     {
-        context.Patch(patchAvailableBody.id,patchAvailableBody.mode);
+        context.SetAvailable(patchAvailableBody.id,patchAvailableBody.mode);
     }
 }
 public class PatchAvailableBody()
