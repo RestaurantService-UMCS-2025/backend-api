@@ -1,10 +1,7 @@
-using System.Text;
 using backend_api.Data;
-using backend_api.Models;
 using backend_api.Repository;
 using backend_api.Services;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApiContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-
+builder.Services.AddSwaggerGen();
 builder.Services.AddScoped(typeof(MenuRepository));
 builder.Services.AddScoped(typeof(MenuService));
 
@@ -23,6 +20,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 app.MapControllers();
 
