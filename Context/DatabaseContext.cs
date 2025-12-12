@@ -52,7 +52,7 @@ public partial class DatabaseContext : DbContext
             entity.Property(e => e.Id)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
-            entity.Property(e => e.Order1).HasColumnName("Order");
+            entity.Property(e => e.OrderData).HasColumnName("Order");
 
             entity.HasOne(d => d.Table).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.TableId)
