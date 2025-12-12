@@ -16,19 +16,23 @@ public class MenuController : ControllerBase
     {
         this.context = context;
     }
-
+    // api/Menu/all
     [HttpGet("all")]
     public List<Menu> GetAll()
     {
         return context.GetAll().Result;
     }
-
+    // api/Menu/1
     [HttpGet("{id}")]
     public Task<Menu> GetById(int id)
     {
         return context.GetById(id);
     }
-
+    // api/Menu/patch
+    // {
+    //     "id":1,
+    //     "mode":false
+    // }
     [HttpPatch("patch")]
     public void Patch([FromBody] PatchAvailableBody patchAvailableBody)
     {
