@@ -11,8 +11,11 @@ builder.Services.AddDbContext<ApiContext>(options => options.UseNpgsql(builder.C
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddScoped(typeof(MenuRepository));
 builder.Services.AddScoped(typeof(MenuService));
+builder.Services.AddScoped(typeof(TablesRepository));
+builder.Services.AddScoped(typeof(TablesService));
 
 var app = builder.Build();
 

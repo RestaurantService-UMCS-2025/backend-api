@@ -9,7 +9,7 @@ public partial class Order
 
     public int? TableId { get; set; }
 
-    public string? Order1 { get; set; }
+    public string? OrderData { get; set; }
 
     public decimal? BillAmount { get; set; }
 
