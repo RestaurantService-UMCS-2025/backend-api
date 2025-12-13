@@ -1,3 +1,4 @@
+using backend_api.Contracts;
 using backend_api.Models;
 using backend_api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -30,10 +31,4 @@ public class TablesController(TablesService context)
     {
         context.SetTableStatus(status.id, status.status);
     }
-}
-
-public class TablesStatusRequest()
-{
-    public int id { get; set; }
-    public string status { get; set; }
 }

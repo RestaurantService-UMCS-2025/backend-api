@@ -28,4 +28,11 @@ public class TablesService(TablesRepository context)
         
         context.Save();
     }
+
+    public void ClearTable(int id)
+    {
+        var table = context.GetById(id);
+        table.TableInfo = null;
+        context.Save();
+    }
 }
