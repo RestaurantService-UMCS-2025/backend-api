@@ -13,5 +13,7 @@ public partial class Order
 
     public decimal? BillAmount { get; set; }
 
+    public string OrderStatus { get; set; }
+    
     public virtual Table? Table { get; set; }
 }

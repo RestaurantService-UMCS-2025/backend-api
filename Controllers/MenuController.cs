@@ -1,3 +1,4 @@
+using backend_api.Contracts.Menu;
 using backend_api.Data;
 using backend_api.Models;
 using backend_api.Repository;
@@ -27,9 +28,4 @@ public class MenuController(MenuService context) : ControllerBase
     {
         context.SetAvailable(patchAvailableBody.id,patchAvailableBody.mode);
     }
-}
-public class PatchAvailableBody()
-{
-    public int id { get; set; }
-    public bool mode { get; set; }
 }
