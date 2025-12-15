@@ -9,6 +9,8 @@ void AddScoped(WebApplicationBuilder builder)
     builder.Services.AddScoped(typeof(MenuService));
     builder.Services.AddScoped(typeof(TablesRepository));
     builder.Services.AddScoped(typeof(TablesService));
+    builder.Services.AddScoped(typeof(OrdersRepository));
+    builder.Services.AddScoped(typeof(OrdersService));
 }
 
 var builder = WebApplication.CreateBuilder(args);
