@@ -31,4 +31,10 @@ public class TablesController(TablesService context)
     {
         context.SetTableStatus(status.id, status.status);
     }
+
+    [HttpPatch("{id}/clear")]
+    public void ClearTableInfo(int id)
+    {
+        context.ClearTable(id);
+    }
 }
