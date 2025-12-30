@@ -1,40 +1,45 @@
 using backend_api.Contracts;
 using backend_api.Models;
 using backend_api.Services;
+using backend_api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_api;
 [ApiController]
 [Route("api/[controller]")]
-public class TablesController(TablesService context)
+public class TablesController
 {
-    private readonly TablesService  context = context;
+    private readonly ITablesService  _tablesService;
 
+    public TablesController(ITablesService tablesService)
+    {
+        _tablesService = tablesService;
+    }
     [HttpGet("all")]
     public List<Table> GetAll()
     {
-        return context.GetAll();
+        return _tablesService.GetAll();
     }
     [HttpGet("{id}")]
     public Table GetById(int id)
     {
-        return context.GetById(id);
+        return _tablesService.GetById(id);
     }
     [HttpGet("{id}/orders")]
     public List<Order> GetTableOrders(int id)
     {
-        return context.GetTableOrders(id);
+        return _tablesService.GetTableOrders(id);
     }
 
-    [HttpPatch("setStatus")]
+    [HttpPatch("status")]
     public void SetStatus([FromBody] TablesStatusRequest status)
     {
-        context.SetTableStatus(status.id, status.status);
+        _tablesService.SetTableStatus(status.id, status.status);
     }
 
     [HttpPatch("{id}/clear")]
     public void ClearTableInfo(int id)
     {
-        context.ClearTable(id);
+        _tablesService.ClearTable(id);
     }
 }

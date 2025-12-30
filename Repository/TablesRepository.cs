@@ -1,12 +1,17 @@
 using backend_api.Data;
 using backend_api.Models;
+using backend_api.Repository.Interfaces;
 
 namespace backend_api.Repository;
 
-public class TablesRepository(ApiContext context)
-{
-    private readonly ApiContext context = context;
+public class TablesRepository :  ITablesRepository
+{ 
+    private readonly ApiContext context;
 
+    public TablesRepository(ApiContext context)
+    {
+        this.context = context;
+    }
     public List<Table> GetAll()
     {
         return context.tables.ToList();

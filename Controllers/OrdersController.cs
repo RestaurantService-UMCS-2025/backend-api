@@ -1,48 +1,54 @@
 using backend_api.Contracts;
 using backend_api.Models;
 using backend_api.Services;
+using backend_api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_api;
 [ApiController]
 [Route("api/[controller]")]
-public class OrdersController(OrdersService context)
+public class OrdersController
 {
-    private readonly OrdersService  context = context;
+    private readonly IOrdersService _ordersService;
 
-	// [HttpPost("order")] // NIE JEST ZAIMPLEMENTOWANE POPRAWNIE
-    // public void CreateOrder([FromBody] PostOrderBody status)
-    // {
-    //     context.CreateNew();
-    // }
+    public OrdersController(IOrdersService ordersService)
+    {
+        this._ordersService = ordersService;
+    }
+	[HttpPost("order")]
+    public void CreateOrder([FromBody] PostOrderBody orderBody)
+    {
+         _ordersService.CreateNew(orderBody);
+    }
     [HttpGet("orders")]
     public List<Order> GetAll()
     {
-        return context.GetAll();
+        return _ordersService.GetAll();
     }
+    [HttpPost("orders")]
+    public void AddToOrder(int orderId, List<OrderItems> orderItems)
+    {
+        _ordersService.AddToOrder(orderId, orderItems);
+    }
+    
     [HttpGet("orders/{id}")]
     public Order GetById(int id)
     {
-        return context.GetById(id);
+        return _ordersService.GetById(id);
     }
     [HttpGet("orders/{id}/status")]
-    public String GetStatusById(int id) 
+    public OrderStage GetStatusById(int id) 
     {
-        return context.GetStatusById(id);
+        return _ordersService.GetStatusById(id);
     }
     [HttpPatch("orders/{id}/status")]
     public void SetOrderStatusById(int id, [FromBody] PatchOrderStatusBody status)
     {
-        context.SetOrderStatusById(id, status.Stage);
+        _ordersService.SetOrderStatusById(id, status.Stage);
     }
     [HttpGet("orders/{id}/items")]
-    public String GetOrderItemsById(int id)
+    public List<OrderItems> GetOrderItemsById(int id)
     {
-        return context.GetOrderItemsById(id);
-    }
-    [HttpPatch("orders/{id}/clear")]
-    public void SetOrderAsArchivedById(int id)
-    {
-        context.ArchiveByTableId(id);
+        return _ordersService.GetOrderItemsById(id);
     }
 }
