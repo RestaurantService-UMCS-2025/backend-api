@@ -5,7 +5,7 @@ namespace backend_api.Services.Interfaces;
 
 public interface IOrdersService
 {
-    public void CreateNew(PostOrderBody orderBody);
+    public int CreateNew(PostOrderBody orderBody);
     public void AddToOrder(int orderId, List<OrderItems> orderItems);
     public List<Order> GetAll();
     public Order GetById(int id);
