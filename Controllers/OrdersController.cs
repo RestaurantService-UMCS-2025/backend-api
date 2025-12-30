@@ -16,9 +16,9 @@ public class OrdersController
         this._ordersService = ordersService;
     }
 	[HttpPost("order")]
-    public void CreateOrder([FromBody] PostOrderBody orderBody)
+    public int CreateOrder([FromBody] PostOrderBody orderBody)
     {
-         _ordersService.CreateNew(orderBody);
+        return _ordersService.CreateNew(orderBody);
     }
     [HttpGet("orders")]
     public List<Order> GetAll()

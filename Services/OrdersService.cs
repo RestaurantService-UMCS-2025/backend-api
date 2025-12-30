@@ -14,7 +14,7 @@ public class OrdersService : IOrdersService
     {
         this.ordersRepository = ordersRepository;
     }
-    public void CreateNew(PostOrderBody orderBody)
+    public int CreateNew(PostOrderBody orderBody)
     {
         var o = new  Order
         {
@@ -23,8 +23,9 @@ public class OrdersService : IOrdersService
             BillAmount = 0,
         };
         ordersRepository.Add(o);
-    }
 
+        return o.Id;
+    }
     public void AddToOrder(int orderId, List<OrderItems> orderItems)
     {
         var order = ordersRepository.GetById(orderId);
