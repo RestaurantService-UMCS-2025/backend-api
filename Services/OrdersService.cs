@@ -1,41 +1,84 @@
+using backend_api.Contracts;
 using backend_api.Models;
 using backend_api.Repository;
+using backend_api.Repository.Interfaces;
+using backend_api.Services.Interfaces;
 
 namespace backend_api.Services;
 
-public class OrdersService(OrdersRepository context)
+public class OrdersService : IOrdersService
 {
-    private readonly OrdersRepository context = context;
+    private readonly IOrdersRepository ordersRepository;
 
-    public void CreateNew()
+    public OrdersService(IOrdersRepository ordersRepository)
     {
-        // jakoś tu tworzymy
+        this.ordersRepository = ordersRepository;
+    }
+    public void CreateNew(PostOrderBody orderBody)
+    {
+        var o = new  Order
+        {
+            TableId = orderBody.tableId,
+            Stage = OrderStage.NULL,
+            BillAmount = 0,
+        };
+        ordersRepository.Add(o);
+    }
 
-        context.Save();
+    public void AddToOrder(int orderId, List<OrderItems> orderItems)
+    {
+        var order = ordersRepository.GetById(orderId);
+        if (order == null)
+            throw new Exception("Order not found");
+        if(orderItems.Count == 0)
+            throw new Exception("OrderItems not found");
+        decimal sum = 0;
+        foreach (var item in orderItems)
+        {
+            var newItem = new OrderItems
+            {
+                MenuItemId = item.MenuItemId,
+                MenuItemName = item.MenuItemName,
+                Quantity = item.Quantity,
+                Note = item.Note,
+                UnitPrice = item.UnitPrice,
+            };
+            sum += newItem.Quantity * item.UnitPrice;
+            order.Items.Add(newItem);
+        }
+        SetOrderStatusById(orderId, OrderStage.Filled);
+        UpdatePrice(orderId, sum);
+        
+        ordersRepository.Save();
+    }
+
+    private void UpdatePrice(int orderId, decimal newPrice)
+    {
+        var order = ordersRepository.GetById(orderId);
+        if (order == null)
+            throw new Exception("Order not found");
+        order.BillAmount += newPrice;
+        ordersRepository.Save();
     }
     public List<Order> GetAll()
     {
-        return context.GetAll();
+        return ordersRepository.GetAll();
     }
     public Order GetById(int id)
     {
-        return context.GetById(id);
+        return ordersRepository.GetById(id);
     }
-    public String GetStatusById(int id)
+    public OrderStage GetStatusById(int id)
     {
-        return context.GetById(id).Stage;
+        return ordersRepository.GetById(id).Stage;
     }
-    public void SetOrderStatusById(int id, String newStage)
+    public void SetOrderStatusById(int id, OrderStage newStage)
     {
-        context.GetById(id).Stage = newStage;
-        context.Save();
+        ordersRepository.GetById(id).Stage = newStage;
+        ordersRepository.Save();
     }
-    public String GetOrderItemsById(int id)
+    public List<OrderItems> GetOrderItemsById(int id)
     {
-        return context.GetById(id).OrderData;
-    }
-    public void ArchiveByTableId(int id)
-    {
-        context.GetByTableId(id).Stage = "Paid";    // wedle dokumentu powinno być archived ale to najbliżej tego było z tych które mamy
+        return ordersRepository.GetById(id).Items;
     }
 }

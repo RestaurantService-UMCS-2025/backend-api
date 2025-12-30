@@ -9,11 +9,11 @@ public partial class Order
 
     public int? TableId { get; set; }
 
-    public string? OrderData { get; set; }
+    public List<OrderItems> Items { get; set; } = new List<OrderItems>();
 
     public decimal? BillAmount { get; set; }
 
-    public string Stage { get; set; }
+    public OrderStage Stage { get; set; }
     
     public virtual Table? Table { get; set; }
 }
