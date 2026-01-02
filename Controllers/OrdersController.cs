@@ -2,12 +2,13 @@ using backend_api.Contracts;
 using backend_api.Models;
 using backend_api.Services;
 using backend_api.Services.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_api;
 [ApiController]
 [Route("api/[controller]")]
-public class OrdersController
+public class OrdersController : ControllerBase
 {
     private readonly IOrdersService _ordersService;
 
@@ -16,25 +17,48 @@ public class OrdersController
         this._ordersService = ordersService;
     }
 	[HttpPost("order")]
-    public int CreateOrder([FromBody] PostOrderBody orderBody)
+    public ActionResult<int> CreateOrder([FromBody] PostOrderBody orderBody)
     {
-        return _ordersService.CreateNew(orderBody);
+        try
+        {
+            var o = _ordersService.CreateNew(orderBody);
+            if (o != -1)
+            {
+                return Ok(o);
+            }
+        }
+        catch(Exception e)
+        {
+            return BadRequest(e);
+        }
+
+        return -1;
     }
     [HttpGet("orders")]
-    public List<Order> GetAll()
+    public ActionResult<List<Order>> GetAll()
     {
-        return _ordersService.GetAll();
+        return Ok(_ordersService.GetAll());
     }
-    [HttpPost("orders")]
-    public void AddToOrder(int orderId, List<OrderItems> orderItems)
+    [HttpPost("items")]
+    public ActionResult AddToOrder(int orderId, List<OrderItems> orderItems)
     {
-        _ordersService.AddToOrder(orderId, orderItems);
+        var o = _ordersService.AddToOrder(orderId, orderItems);
+        if (o)
+        {
+            return Ok();
+        }
+        return BadRequest("Can't add items to order");
     }
     
     [HttpGet("orders/{id}")]
-    public Order GetById(int id)
+    public ActionResult<Order> GetById(int id)
     {
-        return _ordersService.GetById(id);
+        var o  = _ordersService.GetById(id);
+        if (o == null)
+        {
+            return NotFound();
+        }
+        return Ok(_ordersService.GetById(id));
     }
     [HttpGet("orders/{id}/status")]
     public OrderStage GetStatusById(int id) 
@@ -42,13 +66,16 @@ public class OrdersController
         return _ordersService.GetStatusById(id);
     }
     [HttpPatch("orders/{id}/status")]
-    public void SetOrderStatusById(int id, [FromBody] PatchOrderStatusBody status)
+    public ActionResult SetOrderStatusById(int id, [FromBody] PatchOrderStatusBody status)
     {
-        _ordersService.SetOrderStatusById(id, status.Stage);
+        var o = _ordersService.SetOrderStatusById(id, status.Stage);
+        if(o)
+            return Ok();
+        return BadRequest();
     }
     [HttpGet("orders/{id}/items")]
-    public List<OrderItems> GetOrderItemsById(int id)
+    public ActionResult<List<OrderItems>> GetOrderItemsById(int id)
     {
-        return _ordersService.GetOrderItemsById(id);
+        return Ok(_ordersService.GetOrderItemsById(id));
     }
 }

@@ -23,16 +23,16 @@ public class OrdersService : IOrdersService
             BillAmount = 0,
         };
         ordersRepository.Add(o);
-
+        ordersRepository.Save();
         return o.Id;
     }
-    public void AddToOrder(int orderId, List<OrderItems> orderItems)
+    public bool AddToOrder(int orderId, List<OrderItems> orderItems)
     {
         var order = ordersRepository.GetById(orderId);
         if (order == null)
-            throw new Exception("Order not found");
-        if(orderItems.Count == 0)
-            throw new Exception("OrderItems not found");
+            return false;
+        if (orderItems.Count == 0)
+            return false;
         decimal sum = 0;
         foreach (var item in orderItems)
         {
@@ -51,6 +51,7 @@ public class OrdersService : IOrdersService
         UpdatePrice(orderId, sum);
         
         ordersRepository.Save();
+        return true;
     }
 
     private void UpdatePrice(int orderId, decimal newPrice)
@@ -73,10 +74,14 @@ public class OrdersService : IOrdersService
     {
         return ordersRepository.GetById(id).Stage;
     }
-    public void SetOrderStatusById(int id, OrderStage newStage)
+    public bool SetOrderStatusById(int id, OrderStage newStage)
     {
-        ordersRepository.GetById(id).Stage = newStage;
+        var o = ordersRepository.GetById(id);
+        if (o == null)
+            return false;
+        o.Stage = newStage;
         ordersRepository.Save();
+        return true;
     }
     public List<OrderItems> GetOrderItemsById(int id)
     {

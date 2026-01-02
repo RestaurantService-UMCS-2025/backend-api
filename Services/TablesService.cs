@@ -26,18 +26,25 @@ public class TablesService : ITablesService
         return _tablesRepository.GetTableOrders(id);
     }
 
-    public void SetTableStatus(int id, string status)
+    public bool SetTableStatus(int id, string status)
     {
         var table = _tablesRepository.GetById(id);
+        if(table == null)
+            return false;
+        
         table.TableInfo = status;
         
         _tablesRepository.Save();
+        return true;
     }
 
-    public void ClearTable(int id)
+    public bool ClearTable(int id)
     {
         var table = _tablesRepository.GetById(id);
+        if(table == null)
+            return false;
         table.TableInfo = null;
         _tablesRepository.Save();
+        return true;
     }
 }
