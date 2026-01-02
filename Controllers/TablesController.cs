@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend_api;
 [ApiController]
 [Route("api/[controller]")]
-public class TablesController
+public class TablesController :  ControllerBase
 {
     private readonly ITablesService  _tablesService;
 
@@ -16,30 +16,39 @@ public class TablesController
         _tablesService = tablesService;
     }
     [HttpGet("all")]
-    public List<Table> GetAll()
+    public ActionResult<List<Table>> GetAll()
     {
-        return _tablesService.GetAll();
+        return Ok(_tablesService.GetAll());
     }
     [HttpGet("{id}")]
-    public Table GetById(int id)
+    public ActionResult<Table> GetById(int id)
     {
-        return _tablesService.GetById(id);
+        var t =  _tablesService.GetById(id);
+        if(t == null)
+            return NotFound("Table not found");
+        return Ok(t);
     }
     [HttpGet("{id}/orders")]
-    public List<Order> GetTableOrders(int id)
+    public ActionResult<List<Order>> GetTableOrders(int id)
     {
-        return _tablesService.GetTableOrders(id);
+        return Ok(_tablesService.GetTableOrders(id));
     }
 
     [HttpPatch("status")]
-    public void SetStatus([FromBody] TablesStatusRequest status)
+    public ActionResult SetStatus([FromBody] TablesStatusRequest status)
     {
-        _tablesService.SetTableStatus(status.id, status.status);
+        var t = _tablesService.SetTableStatus(status.id, status.status);
+        if(!t)
+            return NotFound("Table not found");
+        return Ok();
     }
 
     [HttpPatch("{id}/clear")]
-    public void ClearTableInfo(int id)
+    public ActionResult ClearTableInfo(int id)
     {
-        _tablesService.ClearTable(id);
+        var t = _tablesService.ClearTable(id);
+        if (!t)
+            return NotFound("Table not found");
+        return Ok();
     }
 }

@@ -23,16 +23,22 @@ public class MenuService : IMenuService
     {
         return menuRepository.GetAll().Where(o => o.Available == true).ToList();
     }
-    public async Task<Menu> GetById(int id)
+    public Menu GetById(int id)
     {
+        var menu = menuRepository.GetById(id);
         return menuRepository.GetById(id);
     }
 
-    public void SetAvailable(int id,bool mode)
+    public bool SetAvailable(int id,bool mode)
     {
         var menu = menuRepository.GetById(id);
+        if (menu == null)
+        {
+            return false;
+        }
         menu.Available = mode;
         menuRepository.Save();
+        return true;
     }
 
     public void SetPlaceholderData()

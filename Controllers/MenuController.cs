@@ -19,21 +19,31 @@ public class MenuController: ControllerBase
         this.menuService = menuService;
     }
     [HttpGet("all")]
-    public List<Menu> GetAll()
+    public ActionResult<List<Menu>> GetAll()
     {
-        return menuService.GetAll().Result;
+        return Ok(menuService.GetAll().Result);
     }
     
     [HttpGet("byId")]
-    public Task<Menu> GetById(int id)
+    public ActionResult<Menu> GetById(int id)
     {
-        return menuService.GetById(id);
+        var menu = menuService.GetById(id);
+        if (menu == null)
+        {
+            return NotFound();
+        }
+        return Ok(menuService.GetById(id));
     }
     
     [HttpPatch("available")]
-    public void SetAvailable([FromBody] PatchAvailableBody patchAvailableBody)
+    public ActionResult SetAvailable([FromBody] PatchAvailableBody patchAvailableBody)
     {
-        menuService.SetAvailable(patchAvailableBody.id,patchAvailableBody.mode);
+        var result = menuService.SetAvailable(patchAvailableBody.id,patchAvailableBody.mode);
+        if (result == false)
+        {
+            return NotFound();
+        }
+        return Ok();
     }
 
     [HttpPut("placeholderData")]
