@@ -68,7 +68,7 @@ public class OrdersController : ControllerBase
     [HttpPatch("orders/{id}/status")]
     public ActionResult SetOrderStatusById(int id, [FromBody] PatchOrderStatusBody status)
     {
-        var o = _ordersService.SetOrderStatusById(id, status.Stage);
+        var o = _ordersService.SetOrderStatusById(id, (OrderStage)status.Stage!);
         if(o)
             return Ok();
         return BadRequest();

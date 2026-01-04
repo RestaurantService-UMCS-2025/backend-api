@@ -1,10 +1,10 @@
+using System.ComponentModel.DataAnnotations;
 using backend_api.Models;
 
 namespace backend_api.Contracts;
 
 public class PostOrderBody()
 {
-	public int tableId { get; set; }
-	// nie jestem pewien co do tego jak stage tu ogarnąć
-	// jak i również table
+	[Required(ErrorMessage = "No tableId provided in body for PostOrderBody")]
+	public int? tableId { get; set; }
 }
