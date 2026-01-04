@@ -37,7 +37,7 @@ public class TablesController :  ControllerBase
     [HttpPatch("status")]
     public ActionResult SetStatus([FromBody] TablesStatusRequest status)
     {
-        var t = _tablesService.SetTableStatus(status.id, status.status);
+        var t = _tablesService.SetTableStatus((int)status.id!, (string)status.status!);
         if(!t)
             return NotFound("Table not found");
         return Ok();

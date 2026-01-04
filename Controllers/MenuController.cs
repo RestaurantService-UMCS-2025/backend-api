@@ -38,7 +38,7 @@ public class MenuController: ControllerBase
     [HttpPatch("available")]
     public ActionResult SetAvailable([FromBody] PatchAvailableBody patchAvailableBody)
     {
-        var result = menuService.SetAvailable(patchAvailableBody.id,patchAvailableBody.mode);
+        var result = menuService.SetAvailable((int)patchAvailableBody.id!, (bool)patchAvailableBody.mode!);
         if (result == false)
         {
             return NotFound();
