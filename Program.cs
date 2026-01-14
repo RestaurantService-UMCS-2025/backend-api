@@ -5,6 +5,7 @@ using backend_api.Repository.Interfaces;
 using backend_api.Services;
 using backend_api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization; // Potrzebne do IgnoreCycles
 
 void AddScoped(WebApplicationBuilder builder)
 {
@@ -26,18 +27,24 @@ builder.Services.AddDbContext<ApiContext>(options => options.UseNpgsql(builder.C
         o.MapEnum<OrderStage>();
         o.MapEnum<UserRole>();
     }));
+
+
+//poprawki w cors
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowReactApp",
+    options.AddPolicy("AllowFrontend", //Nie AllowReactApp
         policy =>
         {
             policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
-
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
 });
-builder.Services.AddControllers();
+
+// 3. Kontrolery + NAPRAWA PĘTLI JSON (Konieczne przy relacjach w bazie!)
+builder.Services.AddControllers().AddJsonOptions(x =>
+   x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
 builder.Services.AddSwaggerGen();
 
 AddScoped(builder);
@@ -50,9 +57,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//brakowało
+app.UseCors("AllowFrontend"); 
+
+// app.UseHttpsRedirection(); // Zakomentowane - bardzo dobrze dla lokalnego HTTP
+
 app.MapControllers();
 
-app.UseHttpsRedirection();
-
-app.Run(); 
-
+app.Run();
