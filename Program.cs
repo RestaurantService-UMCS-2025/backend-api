@@ -26,6 +26,17 @@ builder.Services.AddDbContext<ApiContext>(options => options.UseNpgsql(builder.C
         o.MapEnum<OrderStage>();
         o.MapEnum<UserRole>();
     }));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
