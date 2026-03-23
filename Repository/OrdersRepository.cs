@@ -1,6 +1,7 @@
 using backend_api.Data;
 using backend_api.Models;
 using backend_api.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend_api.Repository;
 
@@ -14,11 +15,15 @@ public class OrdersRepository : IOrdersRepository
     }
     public List<Order> GetAll()
     {
-        return context.orders.ToList();
+        return context.orders
+            .Include(o => o.Items)
+            .ToList();
     }
-    public Order GetById(int id)
+    public Order? GetById(int id)
     {
-        return context.orders.FirstOrDefault(t => t.Id == id);
+        return context.orders
+            .Include(o => o.Items)
+            .FirstOrDefault(t => t.Id == id);
     }
 
     public void Add(Order order)

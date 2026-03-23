@@ -35,13 +35,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", //Nie AllowReactApp
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+            policy.WithOrigins("http://localhost:3000", "http://localhost:5173","http://localhost:5174")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
 });
 
-// 3. Kontrolery + NAPRAWA PĘTLI JSON (Konieczne przy relacjach w bazie!)
 builder.Services.AddControllers().AddJsonOptions(x =>
    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
