@@ -16,12 +16,12 @@ public class MenuService : IMenuService
 
     public Task<List<Menu>> GetAll()
     {
-        return Task.FromResult(menuRepository.GetAll());
+        return Task.FromResult(menuRepository.GetAll().OrderBy(entry => entry.DishName).ToList());
     }
 
     public List<Menu> GetAvailable()
     {
-        return menuRepository.GetAll().Where(o => o.Available == true).ToList();
+        return menuRepository.GetAll().Where(o => o.Available == true).OrderBy(entry => entry.DishName).ToList();
     }
     public Menu GetById(int id)
     {
