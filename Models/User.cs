@@ -9,7 +9,7 @@ public partial class User
 
     public string Login { get; set; } = null!;
 
-    public string Password { get; set; } = null!;
+    public string Password { get; set; } = null!;   // i hope to god that this is going to be hashed
     
     public UserRole Role { get; set; }
 }
