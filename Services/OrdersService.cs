@@ -27,9 +27,9 @@ public class OrdersService : IOrdersService
         ordersRepository.Save();
         return o.Id;
     }
-    public bool AddToOrder(int orderId, List<OrderItems> orderItems)
+    public async Task<bool> AddToOrder(int orderId, List<OrderItems> orderItems)
     {
-        var order = ordersRepository.GetById(orderId);
+        var order = await ordersRepository.GetById(orderId);
         if (order == null)
             return false;
         if (orderItems.Count == 0)
@@ -55,37 +55,39 @@ public class OrdersService : IOrdersService
         return true;
     }
 
-    private void UpdatePrice(int orderId, decimal newPrice)
+    private async void UpdatePrice(int orderId, decimal newPrice)
     {
-        var order = ordersRepository.GetById(orderId);
+        var order = await ordersRepository.GetById(orderId);
         if (order == null)
             throw new Exception("Order not found");
         order.BillAmount += newPrice;
         ordersRepository.Save();
     }
-    public List<Order> GetAll()
+    public async Task<List<Order>> GetAll()
     {
-        return ordersRepository.GetAll();
+        return await ordersRepository.GetAll();
     }
-    public Order GetById(int id)
+    public async Task<Order?> GetById(int id)
     {
-        return ordersRepository.GetById(id);
+        return await ordersRepository.GetById(id);
     }
-    public OrderStage GetStatusById(int id)
+    public async Task<OrderStage> GetStatusById(int id)
     {
-        return ordersRepository.GetById(id).Stage;
+        var data = await ordersRepository.GetById(id); 
+        return data.Stage;
     }
-    public bool SetOrderStatusById(int id, OrderStage newStage)
+    public async Task<bool> SetOrderStatusById(int id, OrderStage newStage)
     {
-        var o = ordersRepository.GetById(id);
+        var o = await ordersRepository.GetById(id);
         if (o == null)
             return false;
         o.Stage = newStage;
         ordersRepository.Save();
         return true;
     }
-    public List<OrderItems> GetOrderItemsById(int id)
+    public async Task<List<OrderItems>> GetOrderItemsById(int id)
     {
-        return ordersRepository.GetById(id).Items;
+        var data = await ordersRepository.GetById(id);
+        return data.Items;
     }
 }

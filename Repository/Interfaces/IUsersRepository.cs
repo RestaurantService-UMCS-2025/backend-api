@@ -6,6 +6,6 @@ public interface IUsersRepository
 {
 	// public List<User> GetAll();
 	// public User? GetById(int id);
-	public User? GetByLogin(string login);
+	public Task<User?> GetByLogin(string login);
 	// public List<User> GetByRole(UserRole userRole);
 }

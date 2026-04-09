@@ -1,5 +1,6 @@
 using backend_api.Repository.Interfaces;
 using backend_api.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend_api.Services;
 
@@ -16,9 +17,9 @@ public class UsersService : IUsersService
         this.passwordHasher = passwordHasher;
     }
 
-	public string Login(string login, string password)
+	public async Task<string?> Login(string login, string password)
 	{
-		var user = usersRepository.GetByLogin(login);
+		var user = await usersRepository.GetByLogin(login);
         
         if (user == null || !passwordHasher.Verify(password, user.Password)) return null;
 

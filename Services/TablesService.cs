@@ -12,23 +12,23 @@ public class TablesService : ITablesService
     {
         this._tablesRepository = tablesRepository;
     }
-    public List<Table> GetAll()
+    public async Task<List<Table>> GetAll()
     {
-        return _tablesRepository.GetAll();
+        return await _tablesRepository.GetAll();
     }
-    public Table  GetById(int id)
+    public async Task<Table?> GetById(int id)
     {
-        return _tablesRepository.GetById(id);
-    }
-
-    public List<Order> GetTableOrders(int id)
-    {
-        return _tablesRepository.GetTableOrders(id);
+        return await _tablesRepository.GetById(id);
     }
 
-    public bool SetTableStatus(int id, string status)
+    public async Task<List<Order>> GetTableOrders(int id)
     {
-        var table = _tablesRepository.GetById(id);
+        return await _tablesRepository.GetTableOrders(id);
+    }
+
+    public async Task<bool> SetTableStatus(int id, string status)
+    {
+        var table = await _tablesRepository.GetById(id);
         if(table == null)
             return false;
         
@@ -38,9 +38,9 @@ public class TablesService : ITablesService
         return true;
     }
 
-    public bool ClearTable(int id)
+    public async Task<bool> ClearTable(int id)
     {
-        var table = _tablesRepository.GetById(id);
+        var table = await _tablesRepository.GetById(id);
         if(table == null)
             return false;
         table.TableInfo = null;

@@ -1,6 +1,7 @@
 using backend_api.Data;
 using backend_api.Models;
 using backend_api.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend_api.Repository;
 
@@ -13,15 +14,14 @@ public class MenuRepository : IMenuRepository
         this.context = context;
     }
 
-    public List<Menu> GetAll()
+    public async Task<List<Menu>> GetAll()
     {
-        return context.menu.ToList();
+        return await context.menu.ToListAsync();
     }
 
-    public Menu GetById(int id)
+    public async Task<Menu?> GetById(int id)
     {
-        var menu = context.menu.FirstOrDefault(menu => menu.Id == id);
-        return menu;
+        return await context.menu.FirstOrDefaultAsync(menu => menu.Id == id);
     }
 
     public void Add(Menu menu)
