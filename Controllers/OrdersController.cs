@@ -2,6 +2,7 @@ using backend_api.Contracts;
 using backend_api.Models;
 using backend_api.Services;
 using backend_api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,10 @@ public class OrdersController : ControllerBase
     {
         this._ordersService = ordersService;
     }
+
+    // [Authorize(Roles = "User")]
+    // tu też na chwilę obecną zostawiam zakomentowane, nie jestem pewien czy to obsługa zamawia
+    // czy to ci co przyszli zamawiają ze swojego telefonu
 	[HttpPost("order")]
     public ActionResult<int> CreateOrder([FromBody] PostOrderBody orderBody)
     {
@@ -34,11 +39,16 @@ public class OrdersController : ControllerBase
 
         return -1;
     }
+
+    [Authorize(Roles = "User")]
     [HttpGet("orders")]
     public ActionResult<List<Order>> GetAll()
     {
         return Ok(_ordersService.GetAll());
     }
+
+    // [Authorize(Roles = "User")]
+    // zakomentowane z tego samego powodu co powyżej
     [HttpPost("items")]
     public ActionResult AddToOrder(int orderId, List<OrderItems> orderItems)
     {
@@ -50,6 +60,7 @@ public class OrdersController : ControllerBase
         return BadRequest("Can't add items to order");
     }
     
+    [Authorize(Roles = "User")]
     [HttpGet("orders/{id}")]
     public ActionResult<Order> GetById(int id)
     {
@@ -60,11 +71,15 @@ public class OrdersController : ControllerBase
         }
         return Ok(_ordersService.GetById(id));
     }
+
+    [Authorize(Roles = "Admin")]
     [HttpGet("orders/{id}/status")]
     public OrderStage GetStatusById(int id) 
     {
         return _ordersService.GetStatusById(id);
     }
+
+    [Authorize(Roles = "User")]
     [HttpPatch("orders/{id}/status")]
     public ActionResult SetOrderStatusById(int id, [FromBody] PatchOrderStatusBody status)
     {
@@ -73,6 +88,9 @@ public class OrdersController : ControllerBase
             return Ok();
         return BadRequest();
     }
+
+    // [Authorize(Roles = "User")]
+    // tak jak powyżej
     [HttpGet("orders/{id}/items")]
     public ActionResult<List<OrderItems>> GetOrderItemsById(int id)
     {

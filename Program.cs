@@ -50,6 +50,11 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// // If you need a new password for a new user (its a pain in the ass to do it anywhere else)
+// var hash = BCrypt.Net.BCrypt.HashPassword("surely_this_is_a_password");
+// Console.WriteLine(hash);
+
+
 builder.Services.AddDbContext<ApiContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
     o =>
     {

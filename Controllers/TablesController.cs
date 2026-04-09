@@ -2,6 +2,7 @@ using backend_api.Contracts;
 using backend_api.Models;
 using backend_api.Services;
 using backend_api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_api;
@@ -15,11 +16,14 @@ public class TablesController :  ControllerBase
     {
         _tablesService = tablesService;
     }
+
+
     [HttpGet("all")]
     public ActionResult<List<Table>> GetAll()
     {
         return Ok(_tablesService.GetAll());
     }
+
     [HttpGet("{id}")]
     public ActionResult<Table> GetById(int id)
     {
@@ -28,12 +32,15 @@ public class TablesController :  ControllerBase
             return NotFound("Table not found");
         return Ok(t);
     }
+
+    [Authorize(Roles = "User")]
     [HttpGet("{id}/orders")]
     public ActionResult<List<Order>> GetTableOrders(int id)
     {
         return Ok(_tablesService.GetTableOrders(id));
     }
 
+    [Authorize(Roles = "User")]
     [HttpPatch("status")]
     public ActionResult SetStatus([FromBody] TablesStatusRequest status)
     {
@@ -43,6 +50,7 @@ public class TablesController :  ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "User")]
     [HttpPatch("{id}/clear")]
     public ActionResult ClearTableInfo(int id)
     {
