@@ -14,24 +14,25 @@ public class MenuService : IMenuService
         this.menuRepository = menuRepository;
     }
 
-    public Task<List<Menu>> GetAll()
+    public async Task<List<Menu>> GetAll()
     {
-        return Task.FromResult(menuRepository.GetAll().OrderBy(entry => entry.DishName).ToList());
+        var data = await menuRepository.GetAll();
+        return data.OrderBy(entry => entry.DishName).ToList();
     }
 
-    public List<Menu> GetAvailable()
+    public async Task<List<Menu>> GetAvailable()
     {
-        return menuRepository.GetAll().Where(o => o.Available == true).OrderBy(entry => entry.DishName).ToList();
+        var data = await menuRepository.GetAll();
+        return data.Where(o => o.Available == true).OrderBy(entry => entry.DishName).ToList();
     }
-    public Menu GetById(int id)
+    public async Task<Menu?> GetById(int id)
     {
-        var menu = menuRepository.GetById(id);
-        return menuRepository.GetById(id);
+        return await menuRepository.GetById(id);
     }
 
-    public bool SetAvailable(int id,bool mode)
+    public async Task<bool> SetAvailable(int id,bool mode)
     {
-        var menu = menuRepository.GetById(id);
+        var menu =  await menuRepository.GetById(id);
         if (menu == null)
         {
             return false;

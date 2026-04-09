@@ -18,9 +18,9 @@ public class UsersController: ControllerBase
 	}
 
 	[HttpPost("login")]
-	public ActionResult<string> Login([FromBody] LoginRequest loginRequest)
+	public async Task<ActionResult<string>> Login([FromBody] LoginRequest loginRequest)
 	{
-		var token = usersService.Login(loginRequest.Login!, loginRequest.Password!);
+		var token = await usersService.Login(loginRequest.Login!, loginRequest.Password!);
 
 		if (token == null) return Unauthorized("Invalid credentials");
 

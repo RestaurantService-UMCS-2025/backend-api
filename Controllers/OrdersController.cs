@@ -42,17 +42,18 @@ public class OrdersController : ControllerBase
 
     [Authorize(Roles = "User")]
     [HttpGet("orders")]
-    public ActionResult<List<Order>> GetAll()
+    public async Task<ActionResult<List<Order>>> GetAll()
     {
-        return Ok(_ordersService.GetAll());
+        var data = await _ordersService.GetAll(); 
+        return Ok(data);
     }
 
     // [Authorize(Roles = "User")]
     // zakomentowane z tego samego powodu co powyżej
     [HttpPost("items")]
-    public ActionResult AddToOrder(int orderId, List<OrderItems> orderItems)
+    public async Task<ActionResult> AddToOrder(int orderId, List<OrderItems> orderItems)
     {
-        var o = _ordersService.AddToOrder(orderId, orderItems);
+        var o = await _ordersService.AddToOrder(orderId, orderItems);
         if (o)
         {
             return Ok();
@@ -62,9 +63,9 @@ public class OrdersController : ControllerBase
     
     [Authorize(Roles = "User")]
     [HttpGet("orders/{id}")]
-    public ActionResult<Order> GetById(int id)
+    public async Task<ActionResult<Order>> GetById(int id)
     {
-        var o  = _ordersService.GetById(id);
+        var o  = await _ordersService.GetById(id);
         if (o == null)
         {
             return NotFound();
@@ -74,16 +75,16 @@ public class OrdersController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpGet("orders/{id}/status")]
-    public OrderStage GetStatusById(int id) 
+    public async Task<OrderStage> GetStatusById(int id) 
     {
-        return _ordersService.GetStatusById(id);
+        return await _ordersService.GetStatusById(id);
     }
 
     [Authorize(Roles = "User")]
     [HttpPatch("orders/{id}/status")]
-    public ActionResult SetOrderStatusById(int id, [FromBody] PatchOrderStatusBody status)
+    public async Task<ActionResult> SetOrderStatusById(int id, [FromBody] PatchOrderStatusBody status)
     {
-        var o = _ordersService.SetOrderStatusById(id, (OrderStage)status.Stage!);
+        var o = await _ordersService.SetOrderStatusById(id, (OrderStage)status.Stage!);
         if(o)
             return Ok();
         return BadRequest();
@@ -92,8 +93,9 @@ public class OrdersController : ControllerBase
     // [Authorize(Roles = "User")]
     // tak jak powyżej
     [HttpGet("orders/{id}/items")]
-    public ActionResult<List<OrderItems>> GetOrderItemsById(int id)
+    public async Task<ActionResult<List<OrderItems>>> GetOrderItemsById(int id)
     {
-        return Ok(_ordersService.GetOrderItemsById(id));
+        var data = await _ordersService.GetOrderItemsById(id);
+        return Ok(data);
     }
 }

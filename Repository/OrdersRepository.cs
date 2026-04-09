@@ -13,17 +13,17 @@ public class OrdersRepository : IOrdersRepository
     {
         this.context = context;
     }
-    public List<Order> GetAll()
+    public async Task<List<Order>> GetAll()
     {
-        return context.orders
+        return await context.orders
             .Include(o => o.Items)
-            .ToList();
+            .ToListAsync();
     }
-    public Order? GetById(int id)
+    public async Task<Order?> GetById(int id)
     {
-        return context.orders
+        return await context.orders
             .Include(o => o.Items)
-            .FirstOrDefault(t => t.Id == id);
+            .FirstOrDefaultAsync(t => t.Id == id);
     }
 
     public void Add(Order order)

@@ -1,6 +1,7 @@
 using backend_api.Data;
 using backend_api.Models;
 using backend_api.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend_api.Repository;
 
@@ -12,18 +13,17 @@ public class TablesRepository :  ITablesRepository
     {
         this.context = context;
     }
-    public List<Table> GetAll()
+    public async Task<List<Table>> GetAll()
     {
-        return context.tables.ToList();
+        return await context.tables.ToListAsync();
     }
-    public Table GetById(int id)
+    public async Task<Table?> GetById(int id)
     {
-        return context.tables.FirstOrDefault(t => t.Id == id);
+        return await context.tables.FirstOrDefaultAsync(t => t.Id == id);
     }
-
-    public List<Order> GetTableOrders(int id)
+    public async Task<List<Order>> GetTableOrders(int id)
     {
-        return context.orders.Where(o => o.TableId == id).ToList();
+        return await context.orders.Where(o => o.TableId == id).ToListAsync();
     }
     public void Save()
     {

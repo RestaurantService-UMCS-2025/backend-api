@@ -22,15 +22,16 @@ public class MenuController: ControllerBase
 
     
     [HttpGet("all")]
-    public ActionResult<List<Menu>> GetAll()
+    public async Task<ActionResult<List<Menu>>> GetAll()
     {
-        return Ok(menuService.GetAll().Result);
+        var data = await menuService.GetAll();
+        return Ok(data);
     }
     
     [HttpGet("byId")]
-    public ActionResult<Menu> GetById(int id)
+    public async Task<ActionResult<Menu>> GetById(int id)
     {
-        var menu = menuService.GetById(id);
+        var menu = await menuService.GetById(id);
         if (menu == null)
         {
             return NotFound();
@@ -40,9 +41,9 @@ public class MenuController: ControllerBase
     
     [Authorize(Roles = "User")]
     [HttpPatch("available")]
-    public ActionResult SetAvailable([FromBody] PatchAvailableBody patchAvailableBody)
+    public async Task<ActionResult> SetAvailable([FromBody] PatchAvailableBody patchAvailableBody)
     {
-        var result = menuService.SetAvailable((int)patchAvailableBody.id!, (bool)patchAvailableBody.mode!);
+        var result = await menuService.SetAvailable((int)patchAvailableBody.id!, (bool)patchAvailableBody.mode!);
         if (result == false)
         {
             return NotFound();
@@ -60,8 +61,8 @@ public class MenuController: ControllerBase
     }
 
     [HttpGet("availableMenu")]
-    public List<Menu> GetAvailable()
+    public async Task<List<Menu>> GetAvailable()
     {
-        return menuService.GetAvailable();
+        return await menuService.GetAvailable();
     }
 }

@@ -19,15 +19,16 @@ public class TablesController :  ControllerBase
 
 
     [HttpGet("all")]
-    public ActionResult<List<Table>> GetAll()
+    public async Task<ActionResult<List<Table>>> GetAll()
     {
-        return Ok(_tablesService.GetAll());
+        var data = await _tablesService.GetAll();
+        return Ok(data);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Table> GetById(int id)
+    public async Task<ActionResult<Table>> GetById(int id)
     {
-        var t =  _tablesService.GetById(id);
+        var t = await _tablesService.GetById(id);
         if(t == null)
             return NotFound("Table not found");
         return Ok(t);
@@ -35,16 +36,17 @@ public class TablesController :  ControllerBase
 
     [Authorize(Roles = "User")]
     [HttpGet("{id}/orders")]
-    public ActionResult<List<Order>> GetTableOrders(int id)
+    public async Task<ActionResult<List<Order>>> GetTableOrders(int id)
     {
-        return Ok(_tablesService.GetTableOrders(id));
+        var data = await _tablesService.GetTableOrders(id); 
+        return Ok(data);
     }
 
     [Authorize(Roles = "User")]
     [HttpPatch("status")]
-    public ActionResult SetStatus([FromBody] TablesStatusRequest status)
+    public async Task<ActionResult> SetStatus([FromBody] TablesStatusRequest status)
     {
-        var t = _tablesService.SetTableStatus((int)status.id!, (string)status.status!);
+        var t = await _tablesService.SetTableStatus((int)status.id!, (string)status.status!);
         if(!t)
             return NotFound("Table not found");
         return Ok();
@@ -52,9 +54,9 @@ public class TablesController :  ControllerBase
 
     [Authorize(Roles = "User")]
     [HttpPatch("{id}/clear")]
-    public ActionResult ClearTableInfo(int id)
+    public async Task<ActionResult> ClearTableInfo(int id)
     {
-        var t = _tablesService.ClearTable(id);
+        var t = await _tablesService.ClearTable(id);
         if (!t)
             return NotFound("Table not found");
         return Ok();
