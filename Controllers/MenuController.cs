@@ -4,6 +4,7 @@ using backend_api.Models;
 using backend_api.Repository;
 using backend_api.Services;
 using backend_api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_api;
@@ -18,6 +19,8 @@ public class MenuController: ControllerBase
     {
         this.menuService = menuService;
     }
+
+    
     [HttpGet("all")]
     public ActionResult<List<Menu>> GetAll()
     {
@@ -35,6 +38,7 @@ public class MenuController: ControllerBase
         return Ok(menuService.GetById(id));
     }
     
+    [Authorize(Roles = "User")]
     [HttpPatch("available")]
     public ActionResult SetAvailable([FromBody] PatchAvailableBody patchAvailableBody)
     {
@@ -46,6 +50,9 @@ public class MenuController: ControllerBase
         return Ok();
     }
 
+    // [Authorize(Roles = "Admin")]
+    // tu raczej przydałoby się to ustawić na admina ale
+    // do testowania na chwilę obecną pozostawiam to jako dostępne dla wszystkich 
     [HttpPut("placeholderData")]
     public void SetPlaceholderData()
     {

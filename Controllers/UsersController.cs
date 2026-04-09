@@ -33,10 +33,17 @@ public class UsersController: ControllerBase
 		return Ok("Yooo this is public, everyone SHOULD see this one");
 	}
 
-	[Authorize]
+	[Authorize(Roles = "Admin")]
 	[HttpGet("private")]
 	public ActionResult Private()
 	{
 		return Ok("Only you should be able to see this one... >_>");
+	}
+
+	[Authorize(Roles = "User")]
+	[HttpGet("userCheck")]
+	public ActionResult UserCheck()
+	{
+		return Ok("Just put the fires in the bag lil bro");
 	}
 }
