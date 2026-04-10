@@ -52,7 +52,7 @@ public class TablesController :  ControllerBase
         return Ok();
     }
 
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin")]
     [HttpPatch("{id}/clear")]
     public async Task<ActionResult> ClearTableInfo(int id)
     {
