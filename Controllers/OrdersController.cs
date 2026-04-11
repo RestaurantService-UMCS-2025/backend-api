@@ -1,10 +1,12 @@
 using backend_api.Contracts;
+using backend_api.Controllers.SignalR;
 using backend_api.Models;
 using backend_api.Services;
 using backend_api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace backend_api;
 [ApiController]
@@ -12,10 +14,12 @@ namespace backend_api;
 public class OrdersController : ControllerBase
 {
     private readonly IOrdersService _ordersService;
+    private readonly IHubContext<OrdersHub> _hub;
 
-    public OrdersController(IOrdersService ordersService)
+    public OrdersController(IOrdersService ordersService, IHubContext<OrdersHub> hub)
     {
         this._ordersService = ordersService;
+        _hub = hub;
     }
 
     // [Authorize(Roles = "User")]
@@ -56,6 +60,7 @@ public class OrdersController : ControllerBase
         var o = await _ordersService.AddToOrder(orderId, orderItems);
         if (o)
         {
+            await _hub.Clients.All.SendAsync("NewOrder");
             return Ok();
         }
         return BadRequest("Can't add items to order");
@@ -80,7 +85,7 @@ public class OrdersController : ControllerBase
         return await _ordersService.GetStatusById(id);
     }
 
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin")]
     [HttpPatch("orders/{id}/status")]
     public async Task<ActionResult> SetOrderStatusById(int id, [FromBody] PatchOrderStatusBody status)
     {
