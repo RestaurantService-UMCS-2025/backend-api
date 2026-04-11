@@ -40,7 +40,7 @@ public class OrdersController : ControllerBase
         return -1;
     }
 
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin")]
     [HttpGet("orders")]
     public async Task<ActionResult<List<Order>>> GetAll()
     {
