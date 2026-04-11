@@ -39,7 +39,7 @@ public class MenuController: ControllerBase
         return Ok(menuService.GetById(id));
     }
     
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin")]
     [HttpPatch("available")]
     public async Task<ActionResult> SetAvailable([FromBody] PatchAvailableBody patchAvailableBody)
     {
