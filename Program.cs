@@ -9,6 +9,7 @@ using System.Text.Json.Serialization; // Potrzebne do IgnoreCycles
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using backend_api.Controllers.SignalR;
 
 
 void AddScoped(WebApplicationBuilder builder)
@@ -28,6 +29,7 @@ void AddScoped(WebApplicationBuilder builder)
 }
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSignalR();
 
 var keyString = builder.Configuration["Jwt:Key"];
 var key = Encoding.UTF8.GetBytes(keyString);
@@ -67,13 +69,13 @@ builder.Services.AddDbContext<ApiContext>(options => options.UseNpgsql(builder.C
 //poprawki w cors
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", //Nie AllowReactApp
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:3000", "http://localhost:5173","http://localhost:5174")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
+    options.AddPolicy("SignalRPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // URL Twojego frontendu (np. Vite to 5173)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // TO JEST WYMAGANE DLA SIGNALR
+    });
 });
 
 builder.Services.AddControllers().AddJsonOptions(x =>
@@ -94,12 +96,12 @@ if (app.Environment.IsDevelopment())
 
 //brakowało
 app.UseCors("AllowFrontend"); 
-
+app.UseCors("SignalRPolicy");
 // app.UseHttpsRedirection(); // Zakomentowane - bardzo dobrze dla lokalnego HTTP
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapHub<OrdersHub>("/ordersHub");
 app.Run();

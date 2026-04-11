@@ -48,8 +48,8 @@ public class OrdersService : IOrdersService
             sum += newItem.Quantity * item.UnitPrice;
             order.Items.Add(newItem);
         }
-        SetOrderStatusById(orderId, OrderStage.Filled);
-        UpdatePrice(orderId, sum);
+        //await SetOrderStatusById(orderId, OrderStage.Filled);
+        //UpdatePrice(orderId, sum);
         
         ordersRepository.Save();
         return true;
