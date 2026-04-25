@@ -48,20 +48,10 @@ public class OrdersService : IOrdersService
             sum += newItem.Quantity * item.UnitPrice;
             order.Items.Add(newItem);
         }
-        //await SetOrderStatusById(orderId, OrderStage.Filled);
-        //UpdatePrice(orderId, sum);
-        
+        await SetOrderStatusById(orderId, OrderStage.Filled);
+        order.BillAmount = sum;
         ordersRepository.Save();
         return true;
-    }
-
-    private async void UpdatePrice(int orderId, decimal newPrice)
-    {
-        var order = await ordersRepository.GetById(orderId);
-        if (order == null)
-            throw new Exception("Order not found");
-        order.BillAmount += newPrice;
-        ordersRepository.Save();
     }
     public async Task<List<Order>> GetAll()
     {
