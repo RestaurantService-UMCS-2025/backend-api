@@ -75,7 +75,7 @@ public class OrdersController : ControllerBase
         {
             return NotFound();
         }
-        return Ok(_ordersService.GetById(id));
+        return Ok(o);
     }
 
     // [Authorize(Roles = "Admin")]
@@ -85,7 +85,7 @@ public class OrdersController : ControllerBase
         return await _ordersService.GetStatusById(id);
     }
 
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpPatch("orders/{id}/status")]
     public async Task<ActionResult> SetOrderStatusById(int id, [FromBody] PatchOrderStatusBody status)
     {
