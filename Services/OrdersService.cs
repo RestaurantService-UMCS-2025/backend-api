@@ -50,7 +50,7 @@ public class OrdersService : IOrdersService
         }
         await SetOrderStatusById(orderId, OrderStage.Filled);
         order.BillAmount = sum;
-        ordersRepository.Save();
+        await ordersRepository.Save();
         return true;
     }
     public async Task<List<Order>> GetAll()
@@ -72,7 +72,7 @@ public class OrdersService : IOrdersService
         if (o == null)
             return false;
         o.Stage = newStage;
-        ordersRepository.Save();
+        await ordersRepository.Save();
         return true;
     }
     public async Task<List<OrderItems>> GetOrderItemsById(int id)

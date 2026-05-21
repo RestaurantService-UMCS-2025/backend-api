@@ -66,7 +66,7 @@ public class OrdersController : ControllerBase
         return BadRequest("Can't add items to order");
     }
     
-    //[Authorize(Roles = "User")]
+    [Authorize(Roles = "User")]
     [HttpGet("orders/{id}")]
     public async Task<ActionResult<Order>> GetById(int id)
     {
