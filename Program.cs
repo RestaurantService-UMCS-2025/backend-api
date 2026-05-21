@@ -5,7 +5,7 @@ using backend_api.Repository.Interfaces;
 using backend_api.Services;
 using backend_api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization; // Potrzebne do IgnoreCycles
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -52,10 +52,6 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// // If you need a new password for a new user (its a pain in the ass to do it anywhere else)
-// var hash = BCrypt.Net.BCrypt.HashPassword("surely_this_is_a_password");
-// Console.WriteLine(hash);
-
 
 builder.Services.AddDbContext<ApiContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
     o =>
@@ -71,11 +67,19 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("SignalRPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // URL Twojego frontendu (np. Vite to 5173)
+        policy.WithOrigins("http://localhost:5173")
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials(); // TO JEST WYMAGANE DLA SIGNALR
+            .AllowCredentials();
     });
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000", "http://localhost:5173","http://localhost:5174")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
 });
 
 builder.Services.AddControllers().AddJsonOptions(x =>
@@ -87,17 +91,14 @@ AddScoped(builder);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-//brakowało
 app.UseCors("AllowFrontend"); 
 app.UseCors("SignalRPolicy");
-// app.UseHttpsRedirection(); // Zakomentowane - bardzo dobrze dla lokalnego HTTP
 
 app.UseAuthentication();
 app.UseAuthorization();

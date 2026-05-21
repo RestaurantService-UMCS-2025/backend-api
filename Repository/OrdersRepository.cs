@@ -17,6 +17,7 @@ public class OrdersRepository : IOrdersRepository
     {
         return await context.orders
             .Include(o => o.Items)
+            .Where(o => o.Stage != OrderStage.Paid)
             .ToListAsync();
     }
     public async Task<Order?> GetById(int id)
@@ -31,9 +32,9 @@ public class OrdersRepository : IOrdersRepository
         context.orders.Add(order);
         context.SaveChanges();
     }
-    public void Save()
+    public async Task Save()
     {
         Console.WriteLine("Saving Orders");
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 }
