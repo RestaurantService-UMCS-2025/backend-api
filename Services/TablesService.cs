@@ -1,3 +1,4 @@
+using backend_api.Contracts;
 using backend_api.Models;
 using backend_api.Repository;
 using backend_api.Repository.Interfaces;
@@ -46,5 +47,25 @@ public class TablesService : ITablesService
         table.TableInfo = null;
         _tablesRepository.Save();
         return true;
+    }
+    
+    public int AddTable(PostTableBody table)
+    {
+        var t = new Table
+        {
+            Id = (int)table.id!,
+            TableInfo = table.tableInfo,
+            Status = TableStatus.Filed
+        };
+        
+        _tablesRepository.Add(t);
+        _tablesRepository.Save();
+        return t.Id;
+    }
+
+    public void RemoveTable(int id)
+    {
+        _tablesRepository.Remove(id);
+        _tablesRepository.Save();   // nie potrzebne?
     }
 }

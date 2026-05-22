@@ -61,4 +61,32 @@ public class TablesController :  ControllerBase
             return NotFound("Table not found");
         return Ok();
     }
+    
+    [Authorize(Roles = "Admin")]
+    [HttpPost("new")]
+    public ActionResult<int> CreateTable([FromBody] PostTableBody tableBody)
+    {
+        try
+        {
+            var o = _tablesService.AddTable(tableBody);
+            if (o != -1)
+            {
+                return Ok(o);
+            }
+        }
+        catch(Exception e)
+        {
+            return BadRequest(e);
+        }
+
+        return -1;
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id}/remove")]
+    public ActionResult<int> RemoveTable(int id)
+    {
+        _tablesService.RemoveTable(id);
+        return Ok();    // nwm czy coś więcej powinniśmy dawać
+    }
 }

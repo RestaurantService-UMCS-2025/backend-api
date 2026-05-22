@@ -7,6 +7,7 @@ public interface ITablesRepository
     public Task<List<Table>> GetAll();
     public Task<Table?> GetById(int id);
     public Task<List<Order>> GetTableOrders(int id);
+    public void Add(Table table);
+    public void Remove(int id);
     public void Save();
-
 }
