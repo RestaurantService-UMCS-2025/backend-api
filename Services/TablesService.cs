@@ -1,3 +1,4 @@
+using backend_api.Contracts;
 using backend_api.Models;
 using backend_api.Repository;
 using backend_api.Repository.Interfaces;
@@ -9,17 +10,14 @@ namespace backend_api.Services;
 public class TablesService : ITablesService
 {
     private readonly ITablesRepository _tablesRepository;
-
     public TablesService(ITablesRepository tablesRepository)
     {
         this._tablesRepository = tablesRepository;
     }
-
     public async Task<List<Table>> GetAll()
     {
         return await _tablesRepository.GetAll();
     }
-
     public async Task<Table?> GetById(int id)
     {
         return await _tablesRepository.GetById(id);
@@ -33,11 +31,11 @@ public class TablesService : ITablesService
     public async Task<bool> SetTableStatus(int id, string status)
     {
         var table = await _tablesRepository.GetById(id);
-        if (table == null)
+        if(table == null)
             return false;
-
+        
         table.TableInfo = status;
-
+        
         _tablesRepository.Save();
         return true;
     }
@@ -60,4 +58,24 @@ public class TablesService : ITablesService
         return qrCodeData;
     }
 
+    
+    public int AddTable(PostTableBody table)
+    {
+        var t = new Table
+        {
+            Id = (int)table.id!,
+            TableInfo = table.tableInfo,
+            Status = TableStatus.Filed
+        };
+        
+        _tablesRepository.Add(t);
+        _tablesRepository.Save();
+        return t.Id;
+    }
+
+    public void RemoveTable(int id)
+    {
+        _tablesRepository.Remove(id);
+        _tablesRepository.Save();   // nie potrzebne?
+    }
 }

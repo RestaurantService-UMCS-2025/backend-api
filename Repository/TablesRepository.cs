@@ -25,6 +25,16 @@ public class TablesRepository :  ITablesRepository
     {
         return await context.orders.Where(o => o.TableId == id).ToListAsync();
     }
+    public void Add(Table table) 
+    {
+        context.tables.Add(table);
+        context.SaveChanges();
+    }
+    public void Remove(int id)
+    {
+        context.tables.Remove(context.tables.Find(id));
+        context.SaveChanges();
+    }
     public void Save()
     {
         context.SaveChanges();
