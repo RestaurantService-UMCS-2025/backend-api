@@ -30,7 +30,7 @@ public class TablesService : ITablesService
 
     public async Task<bool> SetTableStatus(int id, string status)
     {
-        var table = await _tablesRepository.GetById(id); 
+        var table = await _tablesRepository.GetById(id);
         if(table == null)
             return false;
     
@@ -43,7 +43,7 @@ public class TablesService : ITablesService
     public async Task<bool> ClearTable(int id)
     {
         var table = await _tablesRepository.GetById(id);
-        if (table == null)
+        if(table == null)
             return false;
         table.TableInfo = null;
         _tablesRepository.Save();
