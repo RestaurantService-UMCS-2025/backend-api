@@ -64,11 +64,11 @@ public class TablesController :  ControllerBase
     
     [Authorize(Roles = "Admin")]
     [HttpPost("new")]
-    public ActionResult<int> CreateTable([FromBody] PostTableBody tableBody)
+    public async Task<ActionResult<int>> CreateTable([FromBody] PostTableBody tableBody)
     {
         try
         {
-            var o = _tablesService.AddTable(tableBody);
+            var o = await _tablesService.AddTableAsync(tableBody);
             if (o != -1)
             {
                 return Ok(o);
@@ -83,10 +83,12 @@ public class TablesController :  ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpDelete("{id}/remove")]
-    public ActionResult<int> RemoveTable(int id)
+    [HttpPatch("{id}/remove")]
+    public async Task<ActionResult<int>> RemoveTable(int id)
     {
-        _tablesService.RemoveTable(id);
-        return Ok();    // nwm czy coś więcej powinniśmy dawać
+        var r = await _tablesService.SetTableStatus(id, "Paid");
+        if (r)
+            return Ok();
+        return BadRequest("Table not found");
     }
 }

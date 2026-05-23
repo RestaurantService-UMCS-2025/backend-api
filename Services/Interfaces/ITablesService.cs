@@ -10,6 +10,6 @@ public interface ITablesService
     public Task<List<Order>> GetTableOrders(int id);
     public Task<bool> SetTableStatus(int id, string status);
     public Task<bool> ClearTable(int id);
-    public int AddTable(PostTableBody table);
+    public Task<int> AddTableAsync(PostTableBody table);
     public void RemoveTable(int id);
 }
