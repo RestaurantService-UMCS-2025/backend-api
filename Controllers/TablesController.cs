@@ -4,6 +4,9 @@ using backend_api.Services;
 using backend_api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Iron.BarCode;
+using IronBarCode;
+using QRCoder;
 
 namespace backend_api;
 [ApiController]
@@ -60,5 +63,12 @@ public class TablesController :  ControllerBase
         if (!t)
             return NotFound("Table not found");
         return Ok();
+    }
+
+    [HttpGet("{id}/qrcode")]
+    public async Task<ActionResult<QRCodeData>> TableQrCode(int id)
+    {
+        var code = await _tablesService.TableQrCode(id);
+        return code;
     }
 }
