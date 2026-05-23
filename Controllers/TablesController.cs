@@ -25,7 +25,12 @@ public class TablesController :  ControllerBase
         var data = await _tablesService.GetAll();
         return Ok(data);
     }
-
+    [HttpGet("allAvailable")]
+    public async Task<ActionResult<List<Table>>> GetAllFree()
+    {
+        var data = await _tablesService.GetAll();
+        return Ok(data.Where(t=>t.Status != TableStatus.Paid));
+    }
     [HttpGet("{id}")]
     public async Task<ActionResult<Table>> GetById(int id)
     {
