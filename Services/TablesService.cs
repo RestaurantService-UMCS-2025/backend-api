@@ -53,7 +53,7 @@ public class TablesService : ITablesService
     public async Task<QRCodeData> TableQrCode(int id)
     {
         QRCodeGenerator qrGenerator = new QRCodeGenerator();
-        QRCodeData qrCodeData = qrGenerator.CreateQrCode($"http://localhost:5174/{id}",
+        QRCodeData qrCodeData = qrGenerator.CreateQrCode($"http://20.100.201.238:3000/{id}",
             QRCodeGenerator.ECCLevel.Q);
         return qrCodeData;
     }
