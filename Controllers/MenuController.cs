@@ -36,7 +36,7 @@ public class MenuController: ControllerBase
         {
             return NotFound();
         }
-        return Ok(menuService.GetById(id));
+        return Ok(menu);
     }
     
     [Authorize(Roles = "Admin")]

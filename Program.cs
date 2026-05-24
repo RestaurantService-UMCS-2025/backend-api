@@ -11,7 +11,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using backend_api.Controllers.SignalR;
 
-
 void AddScoped(WebApplicationBuilder builder)
 {
     builder.Services.AddScoped<IMenuRepository, MenuRepository>();
@@ -42,8 +41,8 @@ builder.Services.AddAuthentication(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = false,     // might want to set it up if we choose so
-        ValidateAudience = false,   // might want to set it up if we choose so
+        ValidateIssuer = false,
+        ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key)
@@ -51,7 +50,6 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
-
 
 builder.Services.AddDbContext<ApiContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
     o =>
@@ -61,25 +59,20 @@ builder.Services.AddDbContext<ApiContext>(options => options.UseNpgsql(builder.C
         o.MapEnum<UserRole>();
     }));
 
-
-//poprawki w cors
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("SignalRPolicy", policy =>
+    options.AddPolicy("DefaultCorsPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(
+                "http://localhost:3000", 
+                "http://localhost:5173", 
+                "http://localhost:5174",
+                "http://192.168.1.12:5173"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
     });
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:3000", "http://localhost:5173","http://localhost:5174")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
-        });
 });
 
 builder.Services.AddControllers().AddJsonOptions(x =>
@@ -97,8 +90,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowFrontend"); 
-app.UseCors("SignalRPolicy");
+app.UseCors("DefaultCorsPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
